@@ -8,6 +8,8 @@
 
 ## โหมดตัวอย่าง (ค่าเริ่มต้นตอนนี้)
 
+เปิดดูได้ที่ <https://parking-membership.vercel.app>
+
 ไฟล์ [.env.production](.env.production) ตั้ง `VITE_DATA_MODE=mock` ไว้ เว็บจึงใช้งานได้โดยไม่ต้องมี Supabase กดเข้าสู่ระบบได้เลย
 
 - รัน migrations และ [supabase/seed.sql](supabase/seed.sql) ชุดเดียวกับของจริงในเบราว์เซอร์ด้วย PGlite ทุกหน้าจึงทำงานตามกฎจริง
