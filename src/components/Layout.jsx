@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom';
-import { supabase } from '../lib/supabase.js';
+import { mockMode, resetMockData, supabase } from '../lib/supabase.js';
 import { useAuth } from './Auth.jsx';
 
 const NAV = [
@@ -12,6 +12,20 @@ const NAV = [
   { to: '/payments', label: 'การชำระเงิน' },
   { to: '/history', label: 'ประวัติการเข้าใช้' },
 ];
+
+function DemoBanner() {
+  const reset = async () => {
+    if (!window.confirm('ล้างข้อมูลทั้งหมดในเบราว์เซอร์นี้ แล้วกลับไปใช้ข้อมูลตัวอย่างตั้งต้น?')) return;
+    await resetMockData();
+  };
+
+  return (
+    <div className="demo-banner">
+      <span>โหมดตัวอย่าง: ข้อมูลสมมติ เก็บในเบราว์เซอร์นี้เท่านั้น ยังไม่เชื่อมฐานข้อมูลจริง</span>
+      <button className="link-dark" onClick={reset}>ล้างข้อมูลตัวอย่าง</button>
+    </div>
+  );
+}
 
 export default function Layout() {
   const { staff } = useAuth();
@@ -31,6 +45,7 @@ export default function Layout() {
         </div>
       </aside>
       <main className="content">
+        {mockMode && <DemoBanner />}
         <Outlet />
       </main>
     </div>

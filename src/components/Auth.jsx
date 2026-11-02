@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { unwrap } from '../lib/data.js';
-import { supabase } from '../lib/supabase.js';
+import { mockMode, supabase } from '../lib/supabase.js';
 import { Loading } from './ui.jsx';
 
 const AuthContext = createContext(null);
@@ -41,8 +41,8 @@ export function AuthProvider({ children }) {
 export const useAuth = () => useContext(AuthContext);
 
 function Login() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState(mockMode ? 'demo@example.com' : '');
+  const [password, setPassword] = useState(mockMode ? 'demo' : '');
   const [error, setError] = useState(null);
   const [busy, setBusy] = useState(false);
 
@@ -62,6 +62,7 @@ function Login() {
       <form className="card narrow login" onSubmit={submit}>
         <div className="brand brand-dark"><span className="brand-mark">P</span> ระบบจัดการที่จอดรถ</div>
         <h1>เข้าสู่ระบบเจ้าหน้าที่</h1>
+        {mockMode && <p className="notice notice-warn">โหมดตัวอย่าง กดเข้าสู่ระบบได้เลย</p>}
         {error && <p className="form-error" role="alert">{error}</p>}
         <label className="field">
           <span>อีเมล</span>
@@ -84,7 +85,15 @@ function Login() {
 export function RequireAuth({ children }) {
   const { session, staff, loading } = useAuth();
 
-  if (loading) return <main className="center-screen"><Loading /></main>;
+  if (loading) {
+    return (
+      <main className="center-screen">
+        {mockMode && session
+          ? <p className="muted" role="status">กำลังเตรียมข้อมูลตัวอย่าง ครั้งแรกอาจใช้เวลาสักครู่…</p>
+          : <Loading />}
+      </main>
+    );
+  }
   if (!session) return <Login />;
   if (!staff) {
     return (

@@ -113,6 +113,16 @@ test('a member signs up, pays, parks, leaves and shows up in history', async ({ 
     await expect(page.locator('tbody tr')).toHaveCount(1);
     await expect(page.locator('tbody tr')).not.toContainText('ยังจอดอยู่');
     await expect(page.locator('tbody tr')).toContainText('฿20.00');
+
+    const today = new Date(Date.now() + 7 * 60 * 60 * 1000).toISOString().slice(0, 10);
+    await page.getByLabel('ตั้งแต่').fill(today);
+    await page.getByLabel('ถึง').fill(today);
+    await expect(page.locator('tbody tr')).toHaveCount(1);
+    await page.getByLabel('ถึง').fill('2020-01-01');
+    await expect(page.getByText('ไม่พบประวัติ')).toBeVisible();
+    await page.getByLabel('ถึง').fill('');
+    await page.getByLabel('ตั้งแต่').fill('');
+    await expect(page.locator('tbody tr')).toHaveCount(1);
   });
 
   await test.step('a page reload keeps the session and the route', async () => {
